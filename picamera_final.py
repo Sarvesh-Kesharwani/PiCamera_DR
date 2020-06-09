@@ -17,7 +17,7 @@ camera.resolution = (320, 240)
 output = np.empty((240, 320, 3), dtype=np.uint8)
 
 #path to save unknown person's photos
-path = 'Unknown_People'
+path = 'Unknown_People/'
 
 
 
@@ -64,7 +64,7 @@ while True:
                 name = "Unknown"
                 now = datetime.now()
                 dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-                cv2.imwrite(os.path.join(path,dt_string),output)
+                cv2.imwrite(path+dt_string,output)
             face_names.append(name)
 
     print(*face_names, sep = ", ")
