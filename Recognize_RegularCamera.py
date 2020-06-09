@@ -86,8 +86,9 @@ while True:
 
     # Display the resulting image
 
-    cv2.namedWindow('Video',cv2.imshow('Video', frame))
-    cv2.resizeWindow(frame, (1500,750))
+    camera.set(3,1500)
+    camera.set(3,750)
+
     cv2.imshow('Video', frame)
 
     # Hit 'q' on the keyboard to quit!
