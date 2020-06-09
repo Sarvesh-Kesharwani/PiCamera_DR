@@ -90,7 +90,6 @@ while True:
     camera.set(3,750)
 
     cv2.imshow('Video', frame)
-
     # Hit 'q' on the keyboard to quit!
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
