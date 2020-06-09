@@ -5,6 +5,7 @@ import numpy as np
 import playsound
 from google_speech import Speech
 import cv2
+import os
 
 #don't render frame.
 #uses picamera library to capture frames. 
@@ -14,6 +15,8 @@ camera = picamera.PiCamera()
 camera.resolution = (320, 240)
 output = np.empty((240, 320, 3), dtype=np.uint8)
 
+#path to save unknown person's photos
+path = 'Unknown_People'
 
 
 
@@ -26,8 +29,6 @@ with open('dataset_faces.dat', 'rb') as f:
 # Grab the list of names and the list of encodings
 known_face_names = list(all_face_encodings.keys())
 known_face_encodings = np.array(list(all_face_encodings.values()))
-
-
 
 
 
@@ -60,6 +61,7 @@ while True:
                 name = known_face_names[best_match_index]
             else:
                 name = "Unknown"
+                cv2.imwrite(os.path.join(path,''),output)
             face_names.append(name)
 
     print(*face_names, sep = ", ")

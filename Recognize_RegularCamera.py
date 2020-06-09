@@ -5,9 +5,20 @@ import numpy as np
 import playsound
 from google_speech import Speech
 import cv2
+import os
+from datetime import datetime
+
+#don't render frame.
+#uses picamera library to capture frames.
 
 # Get a reference to the Raspberry Pi camera.
-camera = cv2.VideoCapture(0)
+camera = picamera.PiCamera()
+camera.resolution = (320, 240)
+output = np.empty((240, 320, 3), dtype=np.uint8)
+
+#path to save unknown person's photos
+path = 'Unknown_People'
+
 
 
 #load known faces
@@ -21,6 +32,7 @@ known_face_names = list(all_face_encodings.keys())
 known_face_encodings = np.array(list(all_face_encodings.values()))
 
 
+
 # Initialize some variables
 face_locations = []
 face_encodings = []
@@ -30,17 +42,15 @@ process_this_frame = True
 while True:
     print("Capturing image.")
     # Grab a single frame of video from the RPi camera as a numpy array
-    ret, frame = camera.read()
-    small_frame = cv2.resize(frame, (0,0), fx=0.25, fy=0.25)
-    rgb_small_frame = small_frame[:, :, ::-1]
+    camera.capture(output, format="rgb")
 
     # Loop over each face found in the frame to see if it's someone we know.
     if process_this_frame:
         # Find all the faces and face encodings in the current frame of video
-        face_locations = face_recognition.face_locations(rgb_small_frame)
+        face_locations = face_recognition.face_locations(output)
         print("Found {} faces in image.".format(len(face_locations)))
 
-        face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
+        face_encodings = face_recognition.face_encodings(output, face_locations)
 
         face_names = []
         for face_encoding in face_encodings:
@@ -52,6 +62,9 @@ while True:
                 name = known_face_names[best_match_index]
             else:
                 name = "Unknown"
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                cv2.imwrite(os.path.join(path,dt_string),output)
             face_names.append(name)
 
     print(*face_names, sep = ", ")
@@ -67,29 +80,6 @@ while True:
     process_this_frame = not process_this_frame
 
 
-
-    # Display the results
-    for (top, right, bottom, left), name in zip(face_locations, face_names):
-        # Scale back up face locations since the frame we detected in was scaled to 1/4 size
-        top *= 4
-        right *= 4
-        bottom *= 4
-        left *= 4
-
-        # Draw a box around the face
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-
-        # Draw a label with a name below the face
-        cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
-        font = cv2.FONT_HERSHEY_DUPLEX
-        cv2.putText(frame, name, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
-
-    # Display the resulting image
-
-    camera.set(3,1500)
-    camera.set(3,750)
-
-    cv2.imshow('Video', frame)
     # Hit 'q' on the keyboard to quit!
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
