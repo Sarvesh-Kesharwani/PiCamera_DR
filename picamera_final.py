@@ -6,9 +6,10 @@ import playsound
 from google_speech import Speech
 import cv2
 import os
+from datetime import datetime
 
 #don't render frame.
-#uses picamera library to capture frames. 
+#uses picamera library to capture frames.
 
 # Get a reference to the Raspberry Pi camera.
 camera = picamera.PiCamera()
@@ -61,7 +62,9 @@ while True:
                 name = known_face_names[best_match_index]
             else:
                 name = "Unknown"
-                cv2.imwrite(os.path.join(path,''),output)
+                now = datetime.now()
+                dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                cv2.imwrite(os.path.join(path,dt_string),output)
             face_names.append(name)
 
     print(*face_names, sep = ", ")
