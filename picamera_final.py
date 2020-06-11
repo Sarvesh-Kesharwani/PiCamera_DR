@@ -6,6 +6,7 @@ import playsound
 from google_speech import Speech
 import cv2
 import os
+from datetime import datetime
 
 #don't render frame.
 #uses picamera library to capture frames. 
@@ -16,7 +17,7 @@ camera.resolution = (320, 240)
 output = np.empty((240, 320, 3), dtype=np.uint8)
 
 #path to save unknown person's photos
-path = 'Unknown_People'
+path = 'Unknown_People//'
 
 
 
@@ -61,7 +62,9 @@ while True:
                 name = known_face_names[best_match_index]
             else:
                 name = "Unknown"
-                cv2.imwrite(os.path.join(path,''),output)
+                now = datetime.now()
+                dt_string = now.strftime("%d-%m-%Y, %H-%M-%S")
+                cv2.imwrite(path + dt_string + '.jpg', output)
             face_names.append(name)
 
     print(*face_names, sep = ", ")
