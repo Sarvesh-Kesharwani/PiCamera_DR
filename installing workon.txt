@@ -1,0 +1,9 @@
+#install workon using 
+sudo apt install virtualenvwrapper
+
+#set virtualenvwrapper-package's env-path
+# add these lines to end of .bashrc file to access "workon" on every termnal(shell)
+#using sudo nano .bashrc, beingin in home directory.
+export WORKON_HOME=~/.virtualenvs
+VIRTUALENVWRAPPER_PYTHON='/usr/bin/python3'
+source /usr/local/bin/virtualenvwrapper.sh
